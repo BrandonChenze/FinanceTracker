@@ -1,1 +1,19 @@
-<!-- navbar -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.png">
+    <title>Finance Tracker Extended</title>
+</head>
+
+<body>
+    <div>
+        <a href="/">Home</a>
+        <a href="/investments">Investments</a>
+    </div>
+   {% block content %}
+   {% endblock %} 
+</body>

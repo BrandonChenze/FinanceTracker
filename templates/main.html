@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.png">
-    <title>Finance Tracker</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+
+{% block content %}
     <div id="add_item">
         <form id="container" method="post">
             <label>Description:</label>
@@ -111,5 +104,4 @@
         </span>
     </div>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
