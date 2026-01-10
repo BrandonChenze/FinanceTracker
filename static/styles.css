@@ -1,0 +1,74 @@
+*{
+    font-size: 17px;
+}
+#container{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-self: center;
+    text-align: center;
+}
+
+#add_item{
+    display: grid;
+    text-align: center;
+}
+
+#overview{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#transaction{
+    display: flex;
+    justify-content: space-between;
+    border-style: solid;
+    border-width: 1px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    margin-top: 10px;
+}
+
+#budgeting{
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+}
+
+#date{
+    width: 100px;
+}
+
+#details{
+    width: 25%
+}
+
+body{
+   margin-left: 15%;
+   margin-right: 15%
+}
+
+#transaction_filter{
+    display: flex;
+    width: 50%;
+    
+}
+
+.filter{
+    margin-right: 5px
+}
+
+.center_text{
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.budgeting_item{
+    margin-bottom: 15px;
+}
+
+
