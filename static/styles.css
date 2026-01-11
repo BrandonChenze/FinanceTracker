@@ -47,15 +47,29 @@
     width: 25%
 }
 
+#navbar{
+    padding-bottom: 15px;
+}
+
+.navbar{
+    font-size: 25px;
+    text-decoration: none;
+    margin-right: 8px;
+    
+}
+
+.navbar:hover{
+    color: blue;
+}
+
 body{
    margin-left: 15%;
-   margin-right: 15%
+   margin-right: 15%;
 }
 
 #transaction_filter{
     display: flex;
     width: 50%;
-    
 }
 
 .filter{
