@@ -54,7 +54,6 @@ class transactions(db.Model):
             month = f'0{month}'
         start_date = f'{year}-{month}-01'
         end_date = f'{year}-{month}-31'
-        print(start_date, end_date)
         total_of_month = db.session.execute(db.select(func.sum(transactions.price)).where(transactions.date >= start_date).where(transactions.date <= end_date)).scalar()
         return 0 if total_of_month is None else total_of_month
 
