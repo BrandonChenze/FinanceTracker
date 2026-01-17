@@ -10,6 +10,7 @@ from models import transactions
 from database import db
 from config import app
 from logger import logging
+from helpers import read_wells_fargo_data, read_marcus_statement
 
 
 def create_chart_data(start_month: int, end_month: int, start_year: int):
@@ -51,14 +52,12 @@ def main(start_date, end_date):
     elif start_date and end_date:
         start = start_date
         end = end_date
-        print(start_date, end_date)
+
         transaction_data = transactions.get_date_from_range(start_date, end_date)
     else:
         start = None
         end = None
         transaction_data = transactions.get_all_transactions()
-
-    print(transactions.get_total_by_month(12, 2025))
     chart_data, chart_values = create_chart_data(10, 1, 2025)
 
     total = sum(transaction.price for transaction in transaction_data)
@@ -89,6 +88,19 @@ def delete_all():
 def delete(id):
     transactions.query.filter_by(id=id).delete()
     db.session.commit()
+    return redirect("/")
+
+
+@app.route("/upload", methods=["POST", "GET"])
+def parse_csv():
+    print("Upload endpoint hit!")
+    if request.method == "POST":
+        bank = request.form["bank"]
+        csv_file = request.files['csv_file']
+        if bank == "Wells Fargo":
+            read_wells_fargo_data(csv_file)
+        elif bank == "Marcus":
+            read_marcus_statement(csv_file)
     return redirect("/")
 
 

@@ -5,6 +5,20 @@
 {% endblock %}
 
 {% block content %}
+
+<div>
+<h1>CSV Upload</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        Upload file
+        <select name="bank">
+            <option>Wells Fargo</option>
+            <option>Marcus</option>
+        </select>
+        <input type="file" name="csv_file" accept=".csv">
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
     <div id="add_item">
         <form id="container" method="post">
             <label>Description:</label>
