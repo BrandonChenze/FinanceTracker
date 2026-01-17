@@ -60,6 +60,8 @@ def main(start_date, end_date):
         transaction_data = transactions.get_all_transactions()
     chart_data, chart_values = create_chart_data(3, 1, 2025)
 
+
+    print(transactions.is_duplicate("53.61", "12/28/2025"))
     total = sum(transaction.price for transaction in transaction_data)
     categories = transactions.get_categories()
     category_totals = {}

@@ -13,7 +13,11 @@ def read_wells_fargo_data(path_to_csv) -> pd.DataFrame:
         # if item.price < 0:
         #     transactions.add_transaction(item_data, item.price*-1, "Testing", item.description)
         if item.price > 0:
-            transactions.add_transaction(item_data, item.price, "Income", item.description)
+            if not transactions.is_duplicate(item.price, item.date):
+                print("Adding")
+                transactions.add_transaction(item_data, item.price, "Income", item.description)
+            else:
+                print("Duplicate entered!")
     return items
 
 
@@ -25,8 +29,12 @@ def read_marcus_statement(path_to_csv):
     for item in items:
         item = Transaction(item[1], item[2], item[0])
         item_data = datetime.strptime(item.date, "%m/%d/%Y")  # python datetime object for DB
-        transactions.add_transaction(item_data, item.price*-1, "Testing", item.description)
-
+        if not transactions.is_duplicate(item.price*-1, item.date):
+            print("Adding")
+            transactions.add_transaction(item_data, item.price*-1, "Testing", item.description)
+        else:
+            print("Duplicate entered!")
+    return items
 # def get_category(description):
     
 

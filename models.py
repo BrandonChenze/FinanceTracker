@@ -58,6 +58,14 @@ class transactions(db.Model):
         total_of_month = db.session.execute(db.select(func.sum(transactions.price)).where(transactions.date >= start_date).where(transactions.date <= end_date)).scalar()
         return 0 if total_of_month is None else total_of_month
 
+    def is_duplicate(price, date):
+        date = datetime.strptime(date, "%m/%d/%Y").strftime("%Y-%m-%d")
+        price = price
+        if db.session.execute(db.select(transactions.id).where(transactions.price == price).where(transactions.date == date)).scalar():
+            return True #where(transactions.date == date)
+        else:
+            return False
+
     def display(self):
         logging.info(f"{self.date} - {self.category} - {self.price}")
 
