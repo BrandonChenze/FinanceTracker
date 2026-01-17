@@ -108,11 +108,16 @@
     {% for transaction in data %}
     <div id="transaction">
         <span id="details">
-            Price: ${{"%.2f"|format(transaction.price)}} 
+            {% if transaction.category == 'Income' %}
+            Price: <span class="income">${{"%.2f"|format(transaction.price)}} </span>
+            {% else %}
+            Price: <span class="credit">${{"%.2f"|format(transaction.price)}}</span>
+            {% endif %}
             <br>
             Description: {{transaction.description}} 
             <br>
             Category: {{transaction.category}}
+            
         </span>
         <span id="date">
             {{transaction.date}}<br>

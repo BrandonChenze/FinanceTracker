@@ -58,7 +58,7 @@ def main(start_date, end_date):
         start = None
         end = None
         transaction_data = transactions.get_all_transactions()
-    chart_data, chart_values = create_chart_data(10, 1, 2025)
+    chart_data, chart_values = create_chart_data(3, 1, 2025)
 
     total = sum(transaction.price for transaction in transaction_data)
     categories = transactions.get_categories()

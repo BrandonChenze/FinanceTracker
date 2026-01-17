@@ -33,6 +33,10 @@
     margin-top: 10px;
 }
 
+#transaction:hover{
+    background-color: rgb(186, 186, 186);
+}
+
 #budgeting{
     height: 100%;
     display:flex;
@@ -85,4 +89,10 @@ body{
     margin-bottom: 15px;
 }
 
+.income{
+    color: green;
+}
 
+.credit{
+    color: red;
+}
