@@ -29,7 +29,7 @@ class transactions(db.Model):
     def get_all_transactions(start_date=None, end_date=None, page=1):
         """Get every transaction"""
         if start_date and end_date:
-            data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).paginate(page=1, per_page=100).items
+            data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).paginate(page=page, per_page=10).items
             return data_in_range
         else:
             return transactions.query.filter_by().order_by(transactions.date.desc()).paginate(page=page, per_page=10).items
