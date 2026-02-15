@@ -126,4 +126,11 @@
         </span>
     </div>
     {% endfor %}
+
+    <div id="page_navigation">
+        <a href="?page={{current_page - 1}}"><button><</button></a>
+        <span>Page {{current_page}}</span>
+        <a href="?page={{current_page + 1}}"><button>></button></a>
+    </div>
+    
 {% endblock %}

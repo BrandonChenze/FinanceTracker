@@ -41,7 +41,7 @@ def main(start_date, end_date):
         logging.info(request.form)
         description = request.form["description"]
         price = request.form["price"]
-        date = datetime.strptime(request.form["date"], "%Y-%m-%d")
+        date = datetime.strptime(request.form["date"], "%Y-%m-%d").date()
         category = request.form["category"]
         transactions.add_transaction(date, price, category, description)
         return redirect(request.url)
@@ -49,26 +49,28 @@ def main(start_date, end_date):
         start = request.form["start"]
         end = request.form["end"]
         return redirect(f'/{start}_{end}')
-    elif start_date and end_date:
-        start = start_date
-        end = end_date
-
-        transaction_data = transactions.get_date_from_range(start_date, end_date)
     else:
-        start = None
-        end = None
-        transaction_data = transactions.get_all_transactions()
+        page = request.args.get('page', 1, int)
+        if page < 1:
+            page = 1
+        transaction_data = transactions.get_all_transactions(start_date, end_date, page)
     chart_data, chart_values = create_chart_data(3, 1, 2025)
     total = sum(transaction.price for transaction in transaction_data)
     categories = transactions.get_categories()
     category_totals = {}
     for category in categories:
-        category_sum = transactions.get_sum_of_category(category, start, end)
+        category_sum = transactions.get_sum_of_category(category, start_date, end_date)
         if category_sum > 0:
             category_totals[category] = category_sum
     categories = sorted(category_totals.items(), key=lambda item: item[1], reverse=True)
 
-    return render_template("main.html", data=transaction_data, total=total, categories=categories, chart_data=chart_data, chart_values=chart_values)
+    return render_template("main.html",
+                           data=transaction_data,
+                           total=total,
+                           categories=categories,
+                           chart_data=chart_data,
+                           chart_values=chart_values,
+                           current_page=page)
 
 
 @app.route('/investments', methods=["GET"])
@@ -92,7 +94,6 @@ def delete(id):
 
 @app.route("/upload", methods=["POST", "GET"])
 def parse_csv():
-    print("Upload endpoint hit!")
     if request.method == "POST":
         bank = request.form["bank"]
         csv_file = request.files['csv_file']
