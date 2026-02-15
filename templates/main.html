@@ -1,14 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.png">
-    <title>Finance Tracker</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block header %}
+<title>Finance Tracker - Home</title>
+{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>CSV Upload</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        Upload file
+        <select name="bank">
+            <option>Wells Fargo</option>
+            <option>Marcus</option>
+        </select>
+        <input type="file" name="csv_file" accept=".csv">
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
     <div id="add_item">
         <form id="container" method="post">
             <label>Description:</label>
@@ -98,11 +108,16 @@
     {% for transaction in data %}
     <div id="transaction">
         <span id="details">
-            Price: ${{"%.2f"|format(transaction.price)}} 
+            {% if transaction.category == 'Income' %}
+            Price: <span class="income">${{"%.2f"|format(transaction.price)}} </span>
+            {% else %}
+            Price: <span class="credit">${{"%.2f"|format(transaction.price)}}</span>
+            {% endif %}
             <br>
             Description: {{transaction.description}} 
             <br>
             Category: {{transaction.category}}
+            
         </span>
         <span id="date">
             {{transaction.date}}<br>
@@ -111,5 +126,4 @@
         </span>
     </div>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
