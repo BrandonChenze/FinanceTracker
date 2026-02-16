@@ -38,7 +38,6 @@ def create_chart_data(start_month: int, end_month: int, start_year: int):
 @app.route('/<start_date>_<end_date>', methods=["POST", "GET"])
 def main(start_date, end_date):
     if request.method == "POST" and request.form.get("description"):
-        logging.info(request.form)
         description = request.form["description"]
         price = request.form["price"]
         date = datetime.strptime(request.form["date"], "%Y-%m-%d").date()
