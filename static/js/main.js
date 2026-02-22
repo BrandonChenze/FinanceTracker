@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function set_default_date(){
     today = new Date();
     element = document.getElementById('date_input');
+    if (element == null){
+        return
+    }
     filter_start = document.getElementById('filter_start');
     filter_end = document.getElementById('filter_end');
     var dd = String(today.getDate()).padStart(2, '0');
@@ -21,3 +24,18 @@ function set_default_date(){
     filter_end.value = todays_date;
     filter_start.value = first_day_of_month;
 }
+
+function update_budget(){
+    budget_input = document.getElementById("budget_input")
+    if (budget_input == null){
+        return
+    }
+    budget_input.addEventListener("input", (e) => {
+        budget = parseInt(document.getElementById("budget_input").value)
+        document.getElementById("budget_value").textContent = budget
+        total_spent = parseInt(document.getElementById("total_spent").textContent)
+        document.getElementById("budget_percent").textContent =  ((total_spent / budget) * 100).toFixed(2)
+    })
+    
+}
+update_budget()

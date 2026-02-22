@@ -4,7 +4,8 @@ from datetime import datetime
 
 
 def read_wells_fargo_data(path_to_csv) -> pd.DataFrame:
-    df = pd.read_csv(path_to_csv)
+    df = pd.read_csv(path_to_csv, header=None)
+    df.columns = ['Transaction Date', 'Amount', 'Placeholder', 'Placeholder1', 'Description']
     items = df[['Transaction Date', 'Amount', 'Placeholder', 'Placeholder1', 'Description']].values
     for transaction in items:
         item = Transaction(transaction[4], transaction[1], transaction[0])

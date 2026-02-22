@@ -63,7 +63,7 @@ def main(start_date, end_date):
             category_totals[category] = category_sum
     categories = sorted(category_totals.items(), key=lambda item: item[1], reverse=True)
 
-    return render_template("main.html",
+    return render_template("main.html/",
                            data=transaction_data,
                            total=total,
                            categories=categories,
@@ -88,7 +88,7 @@ def delete_all():
 def delete(id):
     transactions.query.filter_by(id=id).delete()
     db.session.commit()
-    return redirect("/")
+    return redirect("/#transaction")
 
 
 @app.route("/upload", methods=["POST", "GET"])
