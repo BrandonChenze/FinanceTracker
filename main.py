@@ -19,42 +19,50 @@ def create_chart_data(start_month: int, end_month: int, start_year: int):
                         9: 'September', 10: 'October', 11: 'November',
                         12: 'December'}
     months = []
-    totals = []
+    total_spent = []
     if start_month == end_month:
-        return [f'{month_conversion[start_month]} {start_year}'], \
-            transactions.get_total_by_month(start_month, start_year)
-    while start_month != end_month + 1:
-        months.append(f'{month_conversion[start_month]} {start_year}')
-        totals.append(transactions.get_total_by_month(start_month, start_year))
-        if start_month + 1 > 12:
-            start_month = 1
-            start_year += 1
-        else:
-            start_month += 1
-    return months, totals
+        months = [f'{month_conversion[start_month]} {start_year}']
+        total_spent.append(transactions.get_total_by_month(start_month, start_year))
+    else:
+        while start_month != end_month + 1:
+            months.append(f'{month_conversion[start_month]} {start_year}')
+            total_spent.append(transactions.get_total_by_month(start_month, start_year))
+            if start_month + 1 > 12:
+                start_month = 1
+                start_year += 1
+            else:
+                start_month += 1
+    return months, total_spent
 
 
 @app.route('/', methods=["POST", "GET"], defaults={'start_date': None, 'end_date': None})
 @app.route('/<start_date>_<end_date>', methods=["POST", "GET"])
-def main(start_date, end_date):
+def main(start_date=None, end_date=None):
     if request.method == "POST" and request.form.get("description"):
         description = request.form["description"]
         price = request.form["price"]
         date = datetime.strptime(request.form["date"], "%Y-%m-%d").date()
         category = request.form["category"]
         transactions.add_transaction(date, price, category, description)
-        return redirect(request.url)
+        return redirect(f'{request.url}#budgeting')
     elif request.method == "POST" and request.form.get("start"):
         start = request.form["start"]
         end = request.form["end"]
-        return redirect(f'/{start}_{end}')
+        return redirect(f'/{start}_{end}#budgeting')
     else:
         page = request.args.get('page', 1, int)
         if page < 1:
             page = 1
         transaction_data = transactions.get_all_transactions(start_date, end_date, page)
-    chart_data, chart_values = create_chart_data(3, 1, 2025)
-    total = sum(transaction.price for transaction in transaction_data)
+
+    chart_start_month = int(start_date.split('-')[1]) if start_date else 3
+    chart_start_year = int(start_date.split('-')[0]) if start_date else 2025
+    chart_end_month = int(end_date.split('-')[1]) if end_date else 1
+
+    total_spent = transactions.total_spent(start_date, end_date)
+    chart_data, chart_values = create_chart_data(start_month=chart_start_month,
+                                                 end_month=chart_end_month,
+                                                 start_year=chart_start_year)
     categories = transactions.get_categories()
     category_totals = {}
     for category in categories:
@@ -65,7 +73,7 @@ def main(start_date, end_date):
 
     return render_template("main.html/",
                            data=transaction_data,
-                           total=total,
+                           total=total_spent,
                            categories=categories,
                            chart_data=chart_data,
                            chart_values=chart_values,
@@ -88,7 +96,7 @@ def delete_all():
 def delete(id):
     transactions.query.filter_by(id=id).delete()
     db.session.commit()
-    return redirect("/#transaction")
+    return redirect("/#budgeting")
 
 
 @app.route("/upload", methods=["POST", "GET"])

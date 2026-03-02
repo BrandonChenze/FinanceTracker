@@ -81,7 +81,7 @@
             <input type="number" value="1000" id="budget_input"> 
             <legend>Budgeting</legend>
             <span class="budgeting_item">Total Spent: $<span id="total_spent">{{"%.2f"|format(total)}}</span></span>
-            <span class="budgeting_item">Monthly Income: ${{"%.2f"|format(4400 - total)}} / $4400</span>
+            <span class="budgeting_item">Monthly Income: ${{"%.2f"|format(total)}} / $4400</span>
             <span class="budgeting_item">Monthly Budget: <span id="budget_percent">{{"%.2f"|format(total| int / 10)}}</span>% of $<span id="budget_value">1000</span></span>
         </fieldset>
             
@@ -98,7 +98,7 @@
             Start: <input id="filter_start" name="start" type="date" class="filter">
             End: <input id="filter_end" name="end" type="date" class="filter">
             <button type="submit" class="filter">Filter</button>
-            <a href="/#transaction"><button type="button" class="filter">Reset Filter</button></a>
+            <a href="/#budgeting"><button type="button" class="filter">Reset Filter</button></a>
         </form>
        
         <label class="filter">Sort By:

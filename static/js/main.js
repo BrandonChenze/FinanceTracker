@@ -38,4 +38,17 @@ function update_budget(){
     })
     
 }
+
+function delete_transation(){
+    console.log('Running')
+    delete_btns = document.querySelectorAll('#trash-btn')
+    for (i = 0; i < delete_btns.length; ++i){
+        delete_btns[i].addEventListener("click", (e) => {
+                console.log(e.currentTarget.id)
+                alert('Deleting item!')
+            })
+    }
+    
+}
+delete_transation()
 update_budget()
