@@ -81,8 +81,8 @@
             <label>Monthly Budget:</label>
             <input type="number" value="1000" id="budget_input"> 
             <legend>Budgeting</legend>
-            <span class="budgeting_item">Total Spent: $<span id="total_spent">{{"%.2f"|format(total)}}</span></span>
-            <span class="budgeting_item">Monthly Income: ${{"%.2f"|format(total)}} / $4400</span>
+            <span class="budgeting_item">Total Spent: <span id="total_spent" class="credit">${{"%.2f"|format(total)}}</span></span>
+            <span class="budgeting_item">Monthly Income: <span class="income">${{"%.2f"|format(total_income)}}</span></span>
             <span class="budgeting_item">Monthly Budget: <span id="budget_percent">{{"%.2f"|format(total| int / 10)}}</span>% of $<span id="budget_value">1000</span></span>
         </fieldset>
             

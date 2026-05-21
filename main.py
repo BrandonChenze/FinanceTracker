@@ -60,6 +60,7 @@ def main(start_date=None, end_date=None):
     chart_end_month = int(end_date.split('-')[1]) if end_date else 1
 
     total_spent = transactions.total_spent(start_date, end_date)
+    total_income = transactions.total_income(start_date, end_date)
     chart_data, chart_values = create_chart_data(start_month=chart_start_month,
                                                  end_month=chart_end_month,
                                                  start_year=chart_start_year)
@@ -74,6 +75,7 @@ def main(start_date=None, end_date=None):
     return render_template("main.html/",
                            data=transaction_data,
                            total=total_spent,
+                           total_income=total_income,
                            categories=categories,
                            chart_data=chart_data,
                            chart_values=chart_values,
