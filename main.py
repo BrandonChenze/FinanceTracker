@@ -61,6 +61,7 @@ def main(start_date=None, end_date=None):
 
     total_spent = transactions.total_spent(start_date, end_date)
     total_income = transactions.total_income(start_date, end_date)
+    total_invested = transactions.total_investment(start_date, end_date)
     chart_data, chart_values = create_chart_data(start_month=chart_start_month,
                                                  end_month=chart_end_month,
                                                  start_year=chart_start_year)
@@ -76,6 +77,7 @@ def main(start_date=None, end_date=None):
                            data=transaction_data,
                            total=total_spent,
                            total_income=total_income,
+                           total_invested=total_invested,
                            categories=categories,
                            chart_data=chart_data,
                            chart_values=chart_values,

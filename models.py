@@ -46,7 +46,7 @@ class transactions(db.Model):
         return total_spent
 
     def total_income(start_date=None, end_date=None):
-        '''Get the total spent on transactions in a time frame.'''
+        '''Get the total income made in a time frame.'''
         if start_date and end_date:
             found_transactions = transactions.query.where(transactions.category == 'Income').where(transactions.date >= start_date).where(transactions.date <= end_date).with_entities(transactions.price).all()
         else:
@@ -55,6 +55,17 @@ class transactions(db.Model):
         for t in found_transactions:
             total_spent += t[0]
         return total_spent
+
+    def total_investment(start_date=None, end_date=None):
+        '''Get the total income made in a time frame.'''
+        if start_date and end_date:
+            found_transactions = transactions.query.where(transactions.category == 'Investment').where(transactions.date >= start_date).where(transactions.date <= end_date).with_entities(transactions.price).all()
+        else:
+            found_transactions = transactions.query.where(transactions.category == 'Investment').with_entities(transactions.price).all()
+        total_invested = 0.0
+        for t in found_transactions:
+            total_invested += t[0]
+        return total_invested
 
     def get_categories(start_date=None, end_date=None):
         """Get all the available categories"""

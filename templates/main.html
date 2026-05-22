@@ -32,6 +32,7 @@
                 <option value="Entertainment">Entertainment</option>
                 <option value="Health">Health</option>
                 <option value="Income">Income</option>
+                <option value="Investment">Investment</option>
             </select>
             
             <label>Price:</label>
@@ -81,14 +82,16 @@
             <label>Monthly Budget:</label>
             <input type="number" value="1000" id="budget_input"> 
             <legend>Budgeting</legend>
-            <span class="budgeting_item">Total Spent: <span id="total_spent" class="credit">${{"%.2f"|format(total)}}</span></span>
-            <span class="budgeting_item">Monthly Income: <span class="income">${{"%.2f"|format(total_income)}}</span></span>
+            <span class="budgeting_item">Income: <span class="income">${{"%.2f"|format(total_income)}}</span></span>
+            <span class="budgeting_item">Spent: <span id="total_spent" class="credit">${{"%.2f"|format(total)}}</span></span>
+            <span class="budgeting_item">Invested: <span id="total_invested" class="credit">${{"%.2f"|format(total_invested)}}</span></span>
+            <span class="budgeting_item">Remainder: <span id="total_spent" class="income">${{"%.2f"|format(total_income - total - total_invested)}}</span></span>
             <span class="budgeting_item">Monthly Budget: <span id="budget_percent">{{"%.2f"|format(total| int / 10)}}</span>% of $<span id="budget_value">1000</span></span>
         </fieldset>
             
         <fieldset id="budgeting">
             <legend>Categories</legend>
-            {% for category in categories %}
+            {% for category in categories if category[0] != 'Income' %}
                 <span class="budgeting_item">{{category[0]}}: ${{"%.2f"|format(category[1])}}</span>
             {% endfor %}
         </fieldset>
