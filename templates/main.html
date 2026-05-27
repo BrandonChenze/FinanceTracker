@@ -82,7 +82,7 @@
             <label>Monthly Budget:</label>
             <input type="number" value="1000" id="budget_input"> 
             <legend>Budgeting</legend>
-            <span class="budgeting_item">Income: <span class="income">${{"%.2f"|format(total_income)}}</span></span>
+            <span class="budgeting_item">Income: <span class="income" id="income_data"></span></span>
             <span class="budgeting_item">Spent: <span id="total_spent" class="credit">${{"%.2f"|format(total)}}</span></span>
             <span class="budgeting_item">Invested: <span id="total_invested" class="credit">${{"%.2f"|format(total_invested)}}</span></span>
             <span class="budgeting_item">Remainder: <span id="total_spent" class="income">${{"%.2f"|format(total_income - total - total_invested)}}</span></span>
@@ -98,12 +98,10 @@
     </div>
     
     <div id="transaction_filter">
-        <form method="post">
-            Start: <input id="filter_start" name="start" type="date" class="filter">
-            End: <input id="filter_end" name="end" type="date" class="filter">
-            <button type="submit" class="filter">Filter</button>
-            <a href="/#budgeting"><button type="button" class="filter">Reset Filter</button></a>
-        </form>
+        Start: <input id="filter_start" name="start" type="date" class="filter">
+        End: <input id="filter_end" name="end" type="date" class="filter">
+        <button class="filter" id="filter_btn">Filter</button>
+        <a href="/#budgeting"><button type="button" class="filter">Reset Filter</button></a>
        
         <label class="filter">Sort By:
             <select>

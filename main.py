@@ -4,7 +4,7 @@ Make sure to activate virtual env
 """
 
 from flask import request, redirect
-from flask import render_template
+from flask import render_template, jsonify
 from datetime import datetime
 from models import transactions
 from database import db
@@ -113,6 +113,18 @@ def parse_csv():
         elif bank == "Marcus":
             read_marcus_statement(csv_file)
     return redirect("/")
+
+
+@app.route("/api/get_income/<start>_<end>")
+@app.route("/api/get_income", defaults={'start': None, 'end': None})
+def get_income(start, end):
+    return jsonify(transactions.total_income(start, end))
+
+
+@app.route("/api/get_spent/<start>_<end>")
+@app.route("/api/get_spent", defaults={'start': None, 'end': None})
+def get_spent(start, end):
+    return jsonify(transactions.total_spent(start, end))
 
 
 if __name__ == "__main__":
