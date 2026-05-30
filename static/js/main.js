@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
 async function fetch_data(endpoint){
-    let url = 'http://localhost:5000/api/' + endpoint
+    let url = '/api/' + endpoint
     console.log('Sending request to '+url)
     try {
         const response = await fetch(url)
