@@ -53,15 +53,11 @@ def main(start_date=None, end_date=None):
         page = request.args.get('page', 1, int)
         if page < 1:
             page = 1
-        transaction_data = transactions.get_all_transactions(start_date, end_date, page)
 
     chart_start_month = int(start_date.split('-')[1]) if start_date else 3
     chart_start_year = int(start_date.split('-')[0]) if start_date else 2025
     chart_end_month = int(end_date.split('-')[1]) if end_date else 1
 
-    total_spent = transactions.total_spent(start_date, end_date)
-    total_income = transactions.total_income(start_date, end_date)
-    total_invested = transactions.total_investment(start_date, end_date)
     chart_data, chart_values = create_chart_data(start_month=chart_start_month,
                                                  end_month=chart_end_month,
                                                  start_year=chart_start_year)
@@ -74,10 +70,6 @@ def main(start_date=None, end_date=None):
     categories = sorted(category_totals.items(), key=lambda item: item[1], reverse=True)
 
     return render_template("main.html/",
-                           data=transaction_data,
-                           total=total_spent,
-                           total_income=total_income,
-                           total_invested=total_invested,
                            categories=categories,
                            chart_data=chart_data,
                            chart_values=chart_values,
@@ -125,6 +117,25 @@ def get_income(start, end):
 @app.route("/api/get_spent", defaults={'start': None, 'end': None})
 def get_spent(start, end):
     return jsonify(transactions.total_spent(start, end))
+
+
+@app.route("/api/investment/<start>_<end>")
+@app.route("/api/investment", defaults={'start': None, 'end': None})
+def investment(start, end):
+    return jsonify(transactions.total_investment(start, end))
+
+
+@app.route("/api/transaction/<start>_<end>")
+@app.route("/api/transaction", defaults={'start': None, 'end': None})
+def transaction(start, end):
+    return transactions.api_get_all_transactions(start, end)
+
+
+@app.route('/api/delete/<id>', methods=["POST", "GET"])
+def api_delete(id):
+    transactions.query.filter_by(id=id).delete()
+    db.session.commit()
+    return {'success': True}
 
 
 if __name__ == "__main__":

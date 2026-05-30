@@ -3,12 +3,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Your code to run after the DOM is ready goes here
     // e.g., adding event listeners to elements, etc.
     data = set_default_date(); // this gets the start and end date
-    get_income(data[0], data[1])
-    get_spending(data[0], data[1])
+    update_budget_data()
 });
 
 
-async function call_api(endpoint){
+async function fetch_data(endpoint){
     let url = 'http://localhost:5000/api/' + endpoint
     console.log('Sending request to '+url)
     try {
@@ -26,8 +25,9 @@ async function get_income(start=null, end=null){
     if (start && end){
         url = url + '/' + start + '_' + end
     } 
-    income = await call_api(url)
+    income = await fetch_data(url)
     document.getElementById('income_data').innerText = '$' + income.toFixed(2)
+    return income
 }
 
 async function get_spending(start=null, end=null){
@@ -35,10 +35,20 @@ async function get_spending(start=null, end=null){
     if (start && end){
         url = url + '/' + start + '_' + end
     } 
-    spent = await call_api(url)
+    spent = await fetch_data(url)
     document.getElementById('total_spent').innerText = '$' + spent.toFixed(2)
+    return spent
 }
 
+async function get_invested(start=null, end=null){
+    let url = 'investment'
+    if (start && end){
+        url = url + '/' + start + '_' + end
+    } 
+    invested = await fetch_data(url)
+    document.getElementById('total_invested').innerText = '$' + invested.toFixed(2)
+    return invested
+}
 
 function set_default_date(){
     today = new Date();
@@ -60,6 +70,7 @@ function set_default_date(){
 }
 
 function update_budget(){
+    // No longer being used
     budget_input = document.getElementById("budget_input")
     if (budget_input == null){
         return
@@ -73,23 +84,79 @@ function update_budget(){
     
 }
 
-function delete_transation(){
-    console.log('Running')
-    delete_btns = document.querySelectorAll('#trash-btn')
-    for (i = 0; i < delete_btns.length; ++i){
-        delete_btns[i].addEventListener("click", (e) => {
-                console.log(e.currentTarget.id)
-                alert('Deleting item!')
-            })
-    }
+// function delete_transation(){
+//     // No longer being used
+//     console.log('Running')
+//     delete_btns = document.querySelectorAll('#trash-btn')
+//     delete_btns = document.querySelectorAll('#api_delete')
+//     for (i = 0; i < delete_btns.length; ++i){
+//         delete_btns[i].addEventListener("click", (e) => {
+//                 console.log(e.currentTarget.id)
+//                 alert('Deleting item!')
+//             })
+//     }
     
-}
-delete_transation()
+// }
+// delete_transation()
 update_budget()
 
+async function render_transactions(filter_start, filter_end){
+    test = await fetch_data('transaction/' + filter_start+ '_' +filter_end)
+    console.log(test[0], test.length)
+    document.getElementById('transaction_data').innerHTML = ''
+    console.log('done')
+    span_element = document.createElement('div')
+    span_element.id = 'transaction_data'
+    if(document.getElementById('transaction_data') != null){
+        document.getElementById('transaction_data').innerHTML = ''
+    }
+    if(test.length == 0){
+        span_element.innerText = 'No Data'
+    } else {
+        for(i = 0; i < test.length; i++){
+            // console.log(test[i])
+            temp_element = document.createElement('div')
+            price = document.createElement('span')
+            description = document.createElement('span')
+            date = document.createElement('span')
+            category = document.createElement('span')
+            delete_btn = document.createElement('button')
+            delete_btn.innerText = 'X'
+            delete_btn.id = 'api_delete'
+            let id = test[i]['id']
+            delete_btn.addEventListener("click", (e) => {
+                e.target.parentElement.remove()
+                fetch_data('delete/' + id)
+            })
+            temp_element.id = 'transaction'
+            if(test[i]['category'] == 'Income'){
+                price.classList.add('income')
+            } else {
+                price.classList.add('credit')
+            }
+            price.innerText = `$${test[i]['price']}`
+            description.innerText = `${test[i]['description']}`
+            date.innerText = `${test[i]['date']}`
+            category.innerText = `Category: ${test[i]['category']}`
+            temp_element.append(date, price, description, category, delete_btn)
+            span_element.append(temp_element)
+        }
+    }
+
+    document.getElementById('transaction_data').replaceWith(span_element)
+}
 
 document.getElementById('filter_btn').addEventListener('click', (event) => {
+    update_budget_data()
+})
+
+async function update_budget_data(){
     filter_start = document.getElementById('filter_start').value
     filter_end = document.getElementById('filter_end').value
-    get_income(filter_start, filter_end)
-})
+    income = await get_income(filter_start, filter_end)
+    invested = await get_invested(filter_start, filter_end)
+    spent = await get_spending(filter_start, filter_end)
+    remainder = income - invested - spent
+    document.getElementById('remainder').innerText = '$' + remainder.toFixed(2)
+    await render_transactions(filter_start, filter_end)
+}

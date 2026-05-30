@@ -29,17 +29,30 @@ class transactions(db.Model):
     def get_all_transactions(start_date=None, end_date=None, page=1):
         """Get every transaction"""
         if start_date and end_date:
-            data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).paginate(page=page, per_page=10).items
-            return data_in_range
+            data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
+            
         else:
-            return transactions.query.filter_by().order_by(transactions.date.desc()).paginate(page=page, per_page=10).items
+            data_in_range = transactions.query.filter_by().order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
+        return data_in_range
 
+    def api_get_all_transactions(start_date=None, end_date=None, page=1):
+        """Get every transaction"""
+        if start_date and end_date:
+            data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
+            
+        else:
+            data_in_range = transactions.query.filter_by().order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
+        x = []
+        for data in data_in_range:
+            x.append(data.to_dict())
+        return x
+    
     def total_spent(start_date=None, end_date=None):
         '''Get the total spent on transactions in a time frame.'''
         if start_date and end_date:
-            found_transactions = transactions.query.where(transactions.category != 'Income').where(transactions.date >= start_date).where(transactions.date <= end_date).with_entities(transactions.price).all()
+            found_transactions = transactions.query.where(transactions.category != 'Income').where(transactions.category != 'Investment').where(transactions.date >= start_date).where(transactions.date <= end_date).with_entities(transactions.price).all()
         else:
-            found_transactions = transactions.query.where(transactions.category != 'Income').with_entities(transactions.price).all()
+            found_transactions = transactions.query.where(transactions.category != 'Income').where(transactions.category != 'Investment').with_entities(transactions.price).all()
         total_spent = 0.0
         for t in found_transactions:
             total_spent += t[0]
@@ -102,6 +115,13 @@ class transactions(db.Model):
         total_of_month = transactions.total_spent(start_date, end_date)
         logging.info(f"Total: {total_of_month} for {start_date} - {end_date}")
         return 0 if total_of_month is None else total_of_month
+
+    def to_dict(self):
+        return {'description': self.description,
+                'date': self.date.strftime("%A %m-%d-%Y"),
+                'price': self.price,
+                'category': self.category,
+                'id': self.id}
 
     def _is_duplicate(price, date):
         """Check if a duplicate value is already in the database"""

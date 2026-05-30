@@ -79,14 +79,11 @@
         
         <fieldset id="budgeting">
            
-            <label>Monthly Budget:</label>
-            <input type="number" value="1000" id="budget_input"> 
             <legend>Budgeting</legend>
             <span class="budgeting_item">Income: <span class="income" id="income_data"></span></span>
-            <span class="budgeting_item">Spent: <span id="total_spent" class="credit">${{"%.2f"|format(total)}}</span></span>
-            <span class="budgeting_item">Invested: <span id="total_invested" class="credit">${{"%.2f"|format(total_invested)}}</span></span>
-            <span class="budgeting_item">Remainder: <span id="total_spent" class="income">${{"%.2f"|format(total_income - total - total_invested)}}</span></span>
-            <span class="budgeting_item">Monthly Budget: <span id="budget_percent">{{"%.2f"|format(total| int / 10)}}</span>% of $<span id="budget_value">1000</span></span>
+            <span class="budgeting_item">Spent: <span id="total_spent" class="credit"></span></span>
+            <span class="budgeting_item">Invested: <span id="total_invested" class="credit"></span></span>
+            <span class="budgeting_item">Remainder: <span id="remainder" class="income"></span></span>
         </fieldset>
             
         <fieldset id="budgeting">
@@ -111,27 +108,8 @@
         </label>
     </div>
 
-    {% for transaction in data %}
-    <div id="transaction">
-        <span id="details">
-            {% if transaction.category == 'Income' %}
-            Price: <span class="income">${{"%.2f"|format(transaction.price)}} </span>
-            {% else %}
-            Price: <span class="credit">${{"%.2f"|format(transaction.price)}}</span>
-            {% endif %}
-            <br>
-            Description: {{transaction.description}} 
-            <br>
-            Category: {{transaction.category}}
-            
-        </span>
-        <span id="date">
-            {{transaction.date}}<br>
-            <a href="delete/{{transaction.id}}"><button id="trash-btn">X</button></a><br>
-            <button>Edit</button>
-        </span>
+    <div id="transaction_data">
     </div>
-    {% endfor %}
 
     <div id="page_navigation">
         <a href="?page={{current_page - 1 if current_page > 1 else 1}}#transaction"><button><</button></a>
