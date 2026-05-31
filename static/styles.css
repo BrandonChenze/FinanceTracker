@@ -33,7 +33,7 @@
 
 #transaction{
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     border-style: solid;
     border-width: 1px;
     padding-top: 10px;
@@ -41,8 +41,13 @@
     padding-left: 10px;
     padding-right: 10px;
     margin-top: 10px;
+    /* flex-wrap: wrap; */
 }
 
+#transaction_data{
+    display: flex;
+    flex-direction: column;    
+}
 #transaction:hover{
     background-color: rgb(186, 186, 186);
 }
@@ -83,7 +88,22 @@ body{
 
 #transaction_filter{
     display: flex;
+    flex-wrap: wrap;
     width: 50%;
+}
+
+#data_div{
+    display: flex;
+    /* flex-wrap: wrap; */
+    justify-content: space-between;
+    width: 60%;
+    align-items: flex-start;
+}
+
+#mod_div{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .filter{

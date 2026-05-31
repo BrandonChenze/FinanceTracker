@@ -138,7 +138,7 @@ def categories(start, end):
     data = {}
     for category in categories:
         data[category] = transactions.get_sum_of_category(category, start, end)
-    sorted_data = dict(sorted(data.items(), key = lambda item: item[1], reverse=True))
+    sorted_data = dict(sorted(data.items(), key=lambda item: item[1], reverse=True))
     print(sorted_data)
     return sorted_data
 

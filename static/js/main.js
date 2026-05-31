@@ -2,9 +2,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOM fully loaded and parsed');
     set_default_date(); // this gets the start and end date
     update_ui()
-    document.getElementById('filter_btn').addEventListener('click', (event) => {
-        update_ui()
-    })
+    change_date()
 });
 
 
@@ -41,41 +39,46 @@ async function render_transactions(filter_start, filter_end){
         for(i = 0; i < test.length; i++){
             temp_element = document.createElement('div')
             temp_element.id = 'transaction'
+
+            let id = test[i]['id']
             price = document.createElement('span')
+            price.id = 'price-'+id
             description = document.createElement('span')
+            description.id = 'description-'+id
             date = document.createElement('span')
             category = document.createElement('span')
+            category.id = 'category-'+id
             delete_btn = document.createElement('button')
             delete_btn.innerText = 'X'
             confirm_btn = document.createElement('button')
             confirm_btn.innerText = 'Update'
-            let id = test[i]['id']
+            
             delete_btn.addEventListener("click", (e) => {
                 e.target.parentElement.remove()
                 fetch_data('delete/' + id)
             })
-            confirm_btn.addEventListener("click", (e) => {
-                child_nodes = e.target.parentElement.childNodes
-                child_nodes.forEach(element => {
-                    if(element instanceof HTMLInputElement){
-                        temp_span = document.createElement('span')
-                        temp_span.innerText = element.value
-                        temp_span.classList = element.classList
-                        __add_edit_event_listener(temp_span)
-                        element.replaceWith(temp_span)
-                    }
-                });
-                data = {
-                    'price': child_nodes[1].innerText,
-                    'description': child_nodes[2].innerText,
-                    'category': child_nodes[3].innerText
-                }
-                post_data('update/'+ id, data)
-                update_ui()
-            })
-            __add_edit_event_listener(category)
-            __add_edit_event_listener(price)
-            __add_edit_event_listener(description)
+            // confirm_btn.addEventListener("click", (e) => {
+            //     child_nodes = e.target.parentElement.parentElement.childNodes[0].childNodes
+            //     child_nodes.forEach(element => {
+            //         if(element instanceof HTMLInputElement){
+            //             temp_span = document.createElement('span')
+            //             temp_span.innerText = element.value
+            //             temp_span.classList = element.classList
+            //             __add_edit_event_listener(temp_span)
+            //             element.replaceWith(temp_span)
+            //         }
+            //     });
+            //     data = {
+            //         'price': document.getElementById('price-'+id).innerText,
+            //         'description': document.getElementById('description-'+id).innerText,
+            //         'category': child_nodes[3].innerText
+            //     }
+            //     post_data('update/'+ id, data)
+            //     update_ui()
+            // })
+            __add_edit_event_listener(category, category.id, id)
+            __add_edit_event_listener(price, price.id, id)
+            __add_edit_event_listener(description, description.id, id)
 
             if(test[i]['category'] == 'Income'){
                 price.classList.add('income')
@@ -86,7 +89,30 @@ async function render_transactions(filter_start, filter_end){
             description.innerText = `${test[i]['description']}`
             date.innerText = `${test[i]['date']}`
             category.innerText = `${test[i]['category']}`
-            temp_element.append(date, price, description, category, confirm_btn, delete_btn)
+
+            data_div = document.createElement('div')
+            data_div.id = 'data_div'
+
+            modifications_div = document.createElement('div')
+            modifications_div.id = 'mod_div'
+
+            data_price_div = document.createElement('div')
+            data_price_div.append(date, price)
+            data_price_div.id = 'mod_div'
+
+            category_div = document.createElement('div')
+            category_div.append(category, description)
+            category_div.id = 'mod_div'
+
+            data_div.append(data_price_div)
+            modifications_div.append(delete_btn)
+
+            cat_mod_div = document.createElement('div')
+            cat_mod_div.append(category_div, modifications_div)
+            cat_mod_div.id = 'data_div'
+
+
+            temp_element.append(data_div, cat_mod_div)
             span_element.append(temp_element)
         }
     }
@@ -128,17 +154,49 @@ async function update_category_data(filter_start, filter_end){
 async function update_ui(){
     filter_start = document.getElementById('filter_start').value
     filter_end = document.getElementById('filter_end').value
-    update_budget_data(filter_start, filter_end)
-    update_category_data(filter_start, filter_end)
-    render_transactions(filter_start, filter_end)
+    await update_budget_data(filter_start, filter_end)
+    await update_category_data(filter_start, filter_end)
+    await render_transactions(filter_start, filter_end)
 }
 
-function __add_edit_event_listener(element){
+function __add_edit_event_listener(element, element_id, id){
     element.addEventListener("click", (e) => {
         previous_text = e.target.innerText
         edit_text = document.createElement('input')
         edit_text.value = previous_text
         edit_text.classList = e.target.classList
-        e.target.replaceWith(edit_text)
+        edit_text.id = element_id
+        save_btn = document.createElement('button')
+        save_btn.innerText = 'Save'
+        save_btn.addEventListener('click', (e) => {
+            updated_val = e.target.previousSibling.value
+            span_text= document.createElement('span')
+            span_text.innerText = updated_val
+            span_text.id = e.target.previousSibling.id
+            span_text.classList = e.target.previousSibling.classList
+            __add_edit_event_listener(span_text, element_id)
+            e.target.previousSibling.replaceWith(span_text)
+            e.target.remove()
+            data = {
+                    'price': document.getElementById('price-'+id).innerText,
+                    'description': document.getElementById('description-'+id).innerText,
+                    'category': document.getElementById('category-'+id).innerText
+                }
+            console.log(data)
+            post_data('update/'+ id, data)
+            update_ui()
+        })
+        e.target.replaceWith(edit_text, save_btn)
     })
 }
+
+function change_date(){
+    document.getElementById('filter_start').addEventListener("change", (e) => {
+        update_ui()
+    })
+
+    document.getElementById('filter_end').addEventListener("change", (e) => {
+        update_ui()
+    })
+}
+
