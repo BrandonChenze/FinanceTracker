@@ -131,10 +131,33 @@ def transaction(start, end):
     return transactions.api_get_all_transactions(start, end)
 
 
+@app.route("/api/categories/<start>_<end>")
+@app.route("/api/categories", defaults={'start': None, 'end': None})
+def categories(start, end):
+    categories = transactions.get_categories(start, end)
+    data = {}
+    for category in categories:
+        data[category] = transactions.get_sum_of_category(category, start, end)
+    sorted_data = dict(sorted(data.items(), key = lambda item: item[1], reverse=True))
+    print(sorted_data)
+    return sorted_data
+
+
 @app.route('/api/delete/<id>', methods=["POST", "GET"])
 def api_delete(id):
     transactions.query.filter_by(id=id).delete()
     db.session.commit()
+    return {'success': True}
+
+
+@app.route('/api/update/<id>', methods=['POST', 'GET'])
+def api_update(id):
+    if request.json:
+        print(request.json)
+        data = request.json
+    else:
+        print("Error no data")
+    transactions.update_transaction(id, data)
     return {'success': True}
 
 

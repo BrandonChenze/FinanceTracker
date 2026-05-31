@@ -116,6 +116,17 @@ class transactions(db.Model):
         logging.info(f"Total: {total_of_month} for {start_date} - {end_date}")
         return 0 if total_of_month is None else total_of_month
 
+    def update_transaction(id, data: dict):
+        transaction = db.session.execute(db.select(transactions).where(transactions.id == id)).scalar()
+        if transaction:
+            transaction.description = data['description']
+            transaction.category = data['category']
+            price = data['price']
+            if price[0] == '$':
+                price = price[1:]
+            transaction.price = price
+            db.session.commit()
+
     def to_dict(self):
         return {'description': self.description,
                 'date': self.date.strftime("%A %m-%d-%Y"),

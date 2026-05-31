@@ -77,7 +77,7 @@
 
     <div id="overview">
         
-        <fieldset id="budgeting">
+        <fieldset id="budgeting" class="budgeting">
            
             <legend>Budgeting</legend>
             <span class="budgeting_item">Income: <span class="income" id="income_data"></span></span>
@@ -86,7 +86,7 @@
             <span class="budgeting_item">Remainder: <span id="remainder" class="income"></span></span>
         </fieldset>
             
-        <fieldset id="budgeting">
+        <fieldset id="categories" class="budgeting">
             <legend>Categories</legend>
             {% for category in categories if category[0] != 'Income' %}
                 <span class="budgeting_item">{{category[0]}}: ${{"%.2f"|format(category[1])}}</span>
