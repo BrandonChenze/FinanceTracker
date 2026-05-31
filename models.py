@@ -104,7 +104,7 @@ class transactions(db.Model):
             sum_of_category = db.session.execute(db.select(func.sum(transactions.price)).where(transactions.category==category)).scalar()
         logging.info(f"Sum of {category} is {sum_of_category}")
 
-        return 0 if sum_of_category is None else sum_of_category
+        return 0 if sum_of_category is None else round(sum_of_category, 2)
 
     def get_total_by_month(month: int, year: int) -> list:
         """Get the total spent in a specific month"""

@@ -87,10 +87,6 @@
         </fieldset>
             
         <fieldset id="categories" class="budgeting">
-            <legend>Categories</legend>
-            {% for category in categories if category[0] != 'Income' %}
-                <span class="budgeting_item">{{category[0]}}: ${{"%.2f"|format(category[1])}}</span>
-            {% endfor %}
         </fieldset>
     </div>
     
