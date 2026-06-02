@@ -200,3 +200,38 @@ function change_date(){
     })
 }
 
+
+function upload_csv(){
+    document.getElementById('upload_csv').addEventListener('click', (e) => {
+        f = new FileReader()
+        f.onload = function(event){
+            console.log(event.target.result)
+            text = event.target.result.split('\n')
+            confirm_data_btn = document.getElementById('confirm_data_btn')
+            text.forEach((e) => {
+                if(e.length > 0){
+                    transaction_data = document.createElement('span')
+                    transaction_data.innerText = e
+                    data_div = document.createElement('div')
+                    check_box = document.createElement('input')
+                    check_box.type = 'checkbox'
+                    data_div.append(check_box, transaction_data)
+                    document.getElementById('formx').insertBefore(data_div, confirm_data_btn)
+                }
+            })
+        }
+        files = document.getElementById('csv_item').files
+        if(files.length == 0){
+            alert('No files selected')
+        } else {
+             f.readAsText(files[0])
+             document.getElementById('formx').style.visibility = 'visible'
+        }
+       
+    })
+
+    document.getElementById('form_cancel').addEventListener('click', (e) => {
+        document.getElementById('formx').style.visibility = 'hidden'
+    })
+}
+upload_csv()

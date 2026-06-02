@@ -61,16 +61,8 @@ def main(start_date=None, end_date=None):
     chart_data, chart_values = create_chart_data(start_month=chart_start_month,
                                                  end_month=chart_end_month,
                                                  start_year=chart_start_year)
-    categories = transactions.get_categories()
-    category_totals = {}
-    for category in categories:
-        category_sum = transactions.get_sum_of_category(category, start_date, end_date)
-        if category_sum > 0:
-            category_totals[category] = category_sum
-    categories = sorted(category_totals.items(), key=lambda item: item[1], reverse=True)
 
     return render_template("main.html/",
-                           categories=categories,
                            chart_data=chart_data,
                            chart_values=chart_values,
                            current_page=page)

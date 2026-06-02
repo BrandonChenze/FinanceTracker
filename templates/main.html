@@ -7,6 +7,7 @@
 {% block content %}
 
 <div>
+    
 <h1>CSV Upload</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
         Upload file
@@ -14,12 +15,18 @@
             <option>Wells Fargo</option>
             <option>Marcus</option>
         </select>
-        <input type="file" name="csv_file" accept=".csv">
+        <input id='csv_item' type="file" name="csv_file" accept=".csv">
         <button type="submit">Upload</button>
     </form>
 </div>
+<button id="upload_csv">upload</button>
 
     <div id="add_item">
+        <form id="formx">
+            <button id="form_cancel" type="button" >X</button>
+            <br>
+            <button id="confirm_data_btn" type="button">Confirm</button>
+        </form>
         <form id="container" method="post">
             <label>Description:</label>
             <input type="text" name="description" placeholder="Description" class="center_text" required>
@@ -45,7 +52,7 @@
         </form>
     </div>    
     
-    <div style="display: flex; justify-content: center; ">
+    <!-- <div style="display: flex; justify-content: center; ">
         <canvas id="myChart" style="height: 50vh; width: 80%;"></canvas>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -73,7 +80,7 @@
             }
             }
         });
-    </script>
+    </script> -->
 
     <div id="overview">
         

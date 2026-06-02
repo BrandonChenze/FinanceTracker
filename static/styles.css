@@ -126,3 +126,11 @@ body{
 .credit{
     color: red;
 }
+#formx{
+    position: absolute;
+    background-color: rgb(175, 175, 175);
+    height: fit-content;
+    left: 33%;
+    width: 33%;
+    visibility: hidden;
+}
