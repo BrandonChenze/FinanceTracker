@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     set_default_date(); // this gets the start and end date
     update_ui()
     change_date()
+    upload_csv()
+    add_transaction()
 });
 
 
@@ -54,28 +56,11 @@ async function render_transactions(filter_start, filter_end){
             confirm_btn.innerText = 'Update'
             
             delete_btn.addEventListener("click", (e) => {
-                e.target.parentElement.remove()
+                e.target.parentElement.parentElement.parentElement.remove()
                 fetch_data('delete/' + id)
+                update_ui()
             })
-            // confirm_btn.addEventListener("click", (e) => {
-            //     child_nodes = e.target.parentElement.parentElement.childNodes[0].childNodes
-            //     child_nodes.forEach(element => {
-            //         if(element instanceof HTMLInputElement){
-            //             temp_span = document.createElement('span')
-            //             temp_span.innerText = element.value
-            //             temp_span.classList = element.classList
-            //             __add_edit_event_listener(temp_span)
-            //             element.replaceWith(temp_span)
-            //         }
-            //     });
-            //     data = {
-            //         'price': document.getElementById('price-'+id).innerText,
-            //         'description': document.getElementById('description-'+id).innerText,
-            //         'category': child_nodes[3].innerText
-            //     }
-            //     post_data('update/'+ id, data)
-            //     update_ui()
-            // })
+           
             __add_edit_event_listener(category, category.id, id)
             __add_edit_event_listener(price, price.id, id)
             __add_edit_event_listener(description, description.id, id)
@@ -124,7 +109,7 @@ async function update_budget_data(filter_start, filter_end){
     income = await get_income(filter_start, filter_end)
     invested = await get_invested(filter_start, filter_end)
     spent = await get_spending(filter_start, filter_end)
-    remainder = income - invested - spent
+    const remainder = income - invested - spent
     document.getElementById('remainder').innerText = '$' + remainder.toFixed(2)
     
 }
@@ -140,13 +125,14 @@ async function update_category_data(filter_start, filter_end){
     legend.innerText = 'Categories'
     new_field_set.append(legend)
    
-    Object.entries(category_data).forEach((e) => {
-        if(e[0] != 'Income'){
-            temp_span = document.createElement('span')
-            temp_span.innerText = `${e[0]} - $${e[1]}`
-            temp_span.classList.add('budgeting_item')
-            new_field_set.append(temp_span)
-        }
+    Object.entries(category_data).forEach((category) => {
+        if(category[0] === 'Income') return;
+
+        const temp_span = document.createElement('span')
+        temp_span.innerText = `${category[0]} - $${category[1]}`
+        temp_span.classList.add('budgeting_item')
+        new_field_set.append(temp_span)
+        
     })
     document.getElementById('categories').replaceWith(new_field_set)
 }
@@ -161,28 +147,30 @@ async function update_ui(){
 
 function __add_edit_event_listener(element, element_id, id){
     element.addEventListener("click", (e) => {
-        previous_text = e.target.innerText
-        edit_text = document.createElement('input')
+        const edit_text = document.createElement('input')
+        const save_btn = document.createElement('button')
+
+        save_btn.innerText = 'Save'
+        const previous_text = e.target.innerText
         edit_text.value = previous_text
         edit_text.classList = e.target.classList
         edit_text.id = element_id
-        save_btn = document.createElement('button')
-        save_btn.innerText = 'Save'
+        
         save_btn.addEventListener('click', (e) => {
             updated_val = e.target.previousSibling.value
-            span_text= document.createElement('span')
+            const span_text= document.createElement('span')
             span_text.innerText = updated_val
             span_text.id = e.target.previousSibling.id
             span_text.classList = e.target.previousSibling.classList
             __add_edit_event_listener(span_text, element_id)
             e.target.previousSibling.replaceWith(span_text)
             e.target.remove()
+            if(id == null) return;
             data = {
                     'price': document.getElementById('price-'+id).innerText,
                     'description': document.getElementById('description-'+id).innerText,
                     'category': document.getElementById('category-'+id).innerText
                 }
-            console.log(data)
             post_data('update/'+ id, data)
             update_ui()
         })
@@ -190,6 +178,10 @@ function __add_edit_event_listener(element, element_id, id){
     })
 }
 
+
+function handle_edit_logic(edit_text, save_btn, e, element_id){
+
+}
 function change_date(){
     document.getElementById('filter_start').addEventListener("change", (e) => {
         update_ui()
@@ -201,37 +193,20 @@ function change_date(){
 }
 
 
-function upload_csv(){
-    document.getElementById('upload_csv').addEventListener('click', (e) => {
-        f = new FileReader()
-        f.onload = function(event){
-            console.log(event.target.result)
-            text = event.target.result.split('\n')
-            confirm_data_btn = document.getElementById('confirm_data_btn')
-            text.forEach((e) => {
-                if(e.length > 0){
-                    transaction_data = document.createElement('span')
-                    transaction_data.innerText = e
-                    data_div = document.createElement('div')
-                    check_box = document.createElement('input')
-                    check_box.type = 'checkbox'
-                    data_div.append(check_box, transaction_data)
-                    document.getElementById('formx').insertBefore(data_div, confirm_data_btn)
-                }
-            })
+function add_transaction(){
+    document.getElementById('add_transaction').addEventListener('click', (e) => {
+        description = document.getElementById('transaction_description').value
+        category = document.getElementById('transaction_category').value
+        price = document.getElementById('transaction_price').value
+        date = document.getElementById('date_input').value
+        data = {
+            'description': description,
+            'price': price,
+            'date': date,
+            'category': category
         }
-        files = document.getElementById('csv_item').files
-        if(files.length == 0){
-            alert('No files selected')
-        } else {
-             f.readAsText(files[0])
-             document.getElementById('formx').style.visibility = 'visible'
-        }
-       
+        post_data('add_transaction', data)
+        update_ui()
     })
-
-    document.getElementById('form_cancel').addEventListener('click', (e) => {
-        document.getElementById('formx').style.visibility = 'hidden'
-    })
+    
 }
-upload_csv()

@@ -10,29 +10,24 @@
     
 <h1>CSV Upload</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
-        Upload file
-        <select name="bank">
-            <option>Wells Fargo</option>
-            <option>Marcus</option>
-        </select>
+        Upload file  **[Date,Price,Description,Category] Format Required**
+        <br>
         <input id='csv_item' type="file" name="csv_file" accept=".csv">
-        <button type="submit">Upload</button>
     </form>
 </div>
-<button id="upload_csv">upload</button>
+<button id="upload_csv">Upload</button>
 
     <div id="add_item">
         <form id="formx">
             <button id="form_cancel" type="button" >X</button>
-            <br>
             <button id="confirm_data_btn" type="button">Confirm</button>
         </form>
         <form id="container" method="post">
             <label>Description:</label>
-            <input type="text" name="description" placeholder="Description" class="center_text" required>
+            <input id="transaction_description" type="text" name="description" placeholder="Description" class="center_text" required>
             
             <label>Category:</label>
-            <select name="category" class="center_text" required> 
+            <select id="transaction_category" name="category" class="center_text" required> 
                 <option value="Food">Food</option>
                 <option value="Amazon">Amazon</option>
                 <option value="Gas">Gas</option>
@@ -43,12 +38,11 @@
             </select>
             
             <label>Price:</label>
-            <input type="number" name="price" step="0.01" min="0" placeholder="$10.99" class="center_text" required>
+            <input id="transaction_price" type="number" name="price" step="0.01" min="0" placeholder="$10.99" class="center_text" required>
             
             <label>Date:</label>
             <input id="date_input" type="date" name="date" placeholder="Description" class="center_text" required>
-            
-            <button type="submit">+</button>
+            <button id="add_transaction" type="button">Add</button>
         </form>
     </div>    
     

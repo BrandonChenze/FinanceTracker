@@ -135,6 +135,24 @@ def categories(start, end):
     return sorted_data
 
 
+@app.route('/api/add_transaction', methods=["POST", "GET"])
+def api_add_transaction():
+    data = request.json
+    print(data['date'])
+    if '/' not in data['date']:
+        date = datetime.strptime(data['date'].strip(), '%Y-%m-%d')
+    else:
+        date = datetime.strptime(data['date'].strip(), '%m/%d/%Y')
+    
+    price = float(data['price'].strip())
+    if price < 0:
+        price = price * -1
+    category = data['category'].strip()
+    description = data['description'].strip()
+    transactions.add_transaction(date, price, category, description)
+    return {'success': True}
+
+
 @app.route('/api/delete/<id>', methods=["POST", "GET"])
 def api_delete(id):
     transactions.query.filter_by(id=id).delete()
