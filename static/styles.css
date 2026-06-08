@@ -89,7 +89,7 @@ body{
 #transaction_filter{
     display: flex;
     flex-wrap: wrap;
-    width: 50%;
+    justify-content: space-between;
 }
 
 #data_div{

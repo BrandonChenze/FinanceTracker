@@ -146,40 +146,52 @@ async function update_ui(){
 }
 
 function __add_edit_event_listener(element, element_id, id){
-    element.addEventListener("click", (e) => {
+    
+    element.addEventListener("click", (orgininal_element) => {
+        const og_text = element.innerText
+        const og_id = element.id
+        const og_class = element.classList
+        console.log(og_text, og_id)
         const edit_text = document.createElement('input')
         const save_btn = document.createElement('button')
 
         save_btn.innerText = 'Save'
-        const previous_text = e.target.innerText
+        const previous_text = orgininal_element.target.innerText
         edit_text.value = previous_text
-        edit_text.classList = e.target.classList
+        edit_text.classList = orgininal_element.target.classList
         edit_text.id = element_id
         
         save_btn.addEventListener('click', (e) => {
-            updated_val = e.target.previousSibling.value
+            const updated_val = edit_text.value
             const span_text= document.createElement('span')
+
             span_text.innerText = updated_val
-            span_text.id = e.target.previousSibling.id
-            span_text.classList = e.target.previousSibling.classList
-            __add_edit_event_listener(span_text, element_id)
-            e.target.previousSibling.replaceWith(span_text)
-            e.target.remove()
+            span_text.id = og_id
+            span_text.classList = og_class
+            
+            __add_edit_event_listener(span_text, element_id, id)
+            edit_text.replaceWith(span_text)
+            save_btn.remove()
             if(id == null) return;
             data = {
-                    'price': document.getElementById('price-'+id).innerText,
-                    'description': document.getElementById('description-'+id).innerText,
-                    'category': document.getElementById('category-'+id).innerText
+                    'price': get_value_from_element('price-'+id),
+                    'description': get_value_from_element('description-'+id),
+                    'category': get_value_from_element('category-'+id)
                 }
             post_data('update/'+ id, data)
             update_ui()
         })
-        e.target.replaceWith(edit_text, save_btn)
+        element.replaceWith(edit_text, save_btn)
     })
 }
 
+function get_value_from_element(element){
+    const el = document.getElementById(element);
+    const text = el.innerText;
+    const val = el.value;
 
-function handle_edit_logic(edit_text, save_btn, e, element_id){
+    if (text) return text;
+    else return val;
 
 }
 function change_date(){
@@ -188,6 +200,11 @@ function change_date(){
     })
 
     document.getElementById('filter_end').addEventListener("change", (e) => {
+        update_ui()
+    })
+
+    document.getElementById('reset_filter').addEventListener("click", (e) => {
+        set_default_date()
         update_ui()
     })
 }
