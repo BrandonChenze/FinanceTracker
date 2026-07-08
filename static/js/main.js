@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     update_ui()
     change_date()
     upload_csv()
-    add_transaction()
+    // add_transaction()
+    document.getElementById('add_transaction').addEventListener('click', async (e) => {await add_transaction()})
 });
 
 
@@ -129,9 +130,16 @@ async function update_category_data(filter_start, filter_end){
         if(category[0] === 'Income') return;
 
         const temp_span = document.createElement('span')
+        const temp_div = document.createElement('div')
         temp_span.innerText = `${category[0]} - $${category[1]}`
-        temp_span.classList.add('budgeting_item')
-        new_field_set.append(temp_span)
+        temp_div.classList.add('budgeting_item')
+        
+        // temp_radio_btn = document.createElement('input')
+        // temp_radio_btn.type = "checkbox"
+        // temp_radio_btn.checked = true
+        // temp_div.append(temp_radio_btn, temp_span)
+        temp_div.append(temp_span)
+        new_field_set.append(temp_div)
         
     })
     document.getElementById('categories').replaceWith(new_field_set)
@@ -194,6 +202,9 @@ function get_value_from_element(element){
     else return val;
 
 }
+/**
+ * Filter the transactions in real time based on what dates have been entered to the date fields
+ */
 function change_date(){
     document.getElementById('filter_start').addEventListener("change", (e) => {
         update_ui()
@@ -209,9 +220,10 @@ function change_date(){
     })
 }
 
-
-function add_transaction(){
-    document.getElementById('add_transaction').addEventListener('click', (e) => {
+/**
+ * Add a transaction to the database based on the fields that have been entered
+ */
+async function add_transaction(){
         description = document.getElementById('transaction_description').value
         category = document.getElementById('transaction_category').value
         price = document.getElementById('transaction_price').value
@@ -222,8 +234,7 @@ function add_transaction(){
             'date': date,
             'category': category
         }
-        post_data('add_transaction', data)
+        await post_data('add_transaction', data)
         update_ui()
-    })
+    }
     
-}
