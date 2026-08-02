@@ -117,10 +117,10 @@ def investment(start, end):
     return jsonify(transactions.total_investment(start, end))
 
 
-@app.route("/api/transaction/<start>_<end>")
+@app.route("/api/transaction/<category>/<start>_<end>")
 @app.route("/api/transaction", defaults={'start': None, 'end': None})
-def transaction(start, end):
-    return transactions.api_get_all_transactions(start, end)
+def transaction(start, end, category):
+    return transactions.api_get_all_transactions(start, end, category)
 
 
 @app.route("/api/categories/<start>_<end>")

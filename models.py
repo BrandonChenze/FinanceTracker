@@ -35,16 +35,20 @@ class transactions(db.Model):
             data_in_range = transactions.query.filter_by().order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
         return data_in_range
 
-    def api_get_all_transactions(start_date=None, end_date=None, page=1):
+    def api_get_all_transactions(start_date=None, end_date=None, category=None):
         """Get every transaction"""
         if start_date and end_date:
-            data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
+            if category and category != 'None':
+                data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).where(transactions.category == category).order_by(transactions.date.desc()).all()
+            else:
+                data_in_range = transactions.query.where(transactions.date >= start_date).where(transactions.date <= end_date).order_by(transactions.date.desc()).all()
             
         else:
-            data_in_range = transactions.query.filter_by().order_by(transactions.date.desc()).all()#.paginate(page=page, per_page=10).items
+            data_in_range = transactions.query.filter_by().order_by(transactions.date.desc()).all()
         x = []
         for data in data_in_range:
             x.append(data.to_dict())
+        print(x)
         return x
     
     def total_spent(start_date=None, end_date=None):

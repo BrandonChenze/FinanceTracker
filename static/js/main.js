@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     upload_csv()
     // add_transaction()
     document.getElementById('add_transaction').addEventListener('click', async (e) => {await add_transaction()})
+    
 });
 
 
@@ -29,8 +30,13 @@ function set_default_date(){
 }
 
 
-async function render_transactions(filter_start, filter_end){
-    test = await fetch_data('transaction/' + filter_start+ '_' +filter_end)
+async function render_transactions(filter_start, filter_end, category = null){
+    if(category != 'None'){
+        test = await fetch_data('transaction/'+ category +'/' + filter_start+ '_' +filter_end)
+    } else {
+        test = await fetch_data('transaction/None/' + filter_start+ '_' +filter_end)
+    }
+    
     span_element = document.createElement('div')
     span_element.id = 'transaction_data'
     if(document.getElementById('transaction_data') != null){
@@ -115,7 +121,7 @@ async function update_budget_data(filter_start, filter_end){
     
 }
 
-async function update_category_data(filter_start, filter_end){
+async function update_category_data(filter_start, filter_end, target_category){
     filter_start = document.getElementById('filter_start').value
     filter_end = document.getElementById('filter_end').value
     let category_data = await fetch_data('categories/'+filter_start+'_'+filter_end)
@@ -125,32 +131,31 @@ async function update_category_data(filter_start, filter_end){
     legend = document.createElement('Legend')
     legend.innerText = 'Categories'
     new_field_set.append(legend)
-   
+    
     Object.entries(category_data).forEach((category) => {
         if(category[0] === 'Income') return;
+
+        // if(target_category != 'None' && category[0] != target_category) return; // Not sure if I want this in. It might be nice to still see all category spending
 
         const temp_span = document.createElement('span')
         const temp_div = document.createElement('div')
         temp_span.innerText = `${category[0]} - $${category[1]}`
         temp_div.classList.add('budgeting_item')
-        
-        // temp_radio_btn = document.createElement('input')
-        // temp_radio_btn.type = "checkbox"
-        // temp_radio_btn.checked = true
-        // temp_div.append(temp_radio_btn, temp_span)
+    
         temp_div.append(temp_span)
         new_field_set.append(temp_div)
-        
     })
     document.getElementById('categories').replaceWith(new_field_set)
+    build_category_filter(category_data)
 }
 
 async function update_ui(){
     filter_start = document.getElementById('filter_start').value
     filter_end = document.getElementById('filter_end').value
+    category = document.getElementById('filter_category').value
     await update_budget_data(filter_start, filter_end)
-    await update_category_data(filter_start, filter_end)
-    await render_transactions(filter_start, filter_end)
+    await update_category_data(filter_start, filter_end, category)
+    await render_transactions(filter_start, filter_end, category)
 }
 
 function __add_edit_event_listener(element, element_id, id){
@@ -237,4 +242,27 @@ async function add_transaction(){
         await post_data('add_transaction', data)
         update_ui()
     }
+
+function build_category_filter(category_data){
+    const filter_category = document.getElementById('filter_category')
+    const filter_category_updated = document.createElement('select')
+    filter_category_updated.id = filter_category.id
     
+    const default_category = document.createElement('option')
+    default_category.value = 'None'
+
+    filter_category_updated.appendChild(default_category)
+    Object.entries(category_data).forEach((category) => {
+        if(category[0] === 'Income') return;
+    
+        
+        const filter_option = document.createElement('option')
+        filter_option.innerHTML = `${category[0]}`
+        filter_category_updated.append(filter_option)
+    })
+    filter_category_updated.value = filter_category.value
+    filter_category.replaceWith(filter_category_updated)
+    filter_category_updated.addEventListener('change',  (e) => {
+        update_ui()
+    })
+}
