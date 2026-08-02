@@ -48,7 +48,6 @@ class transactions(db.Model):
         x = []
         for data in data_in_range:
             x.append(data.to_dict())
-        print(x)
         return x
     
     def total_spent(start_date=None, end_date=None):
